@@ -202,6 +202,21 @@ try {
             }
             break;
             
+        case 'supplier':
+            if($param === 'dashboard_stats' && $method === 'GET') {
+                include 'api/endpoints/supplier/dashboard_stats.php';
+            } elseif($param === 'orders' && $method === 'GET') {
+                include 'api/endpoints/supplier/orders.php';
+            } elseif($param === 'quotations' && $method === 'GET') {
+                include 'api/endpoints/supplier/quotations.php';
+            } elseif($param === 'submit_quotation' && $method === 'POST') {
+                include 'api/endpoints/supplier/submit_quotation.php';
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Endpoint no encontrado', 'path' => $api_path]);
+            }
+            break;
+            
         case 'quotations':
             if($method === 'GET') {
                 if($param) {
