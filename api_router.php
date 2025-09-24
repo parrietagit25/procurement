@@ -122,11 +122,13 @@ try {
                     include 'api/endpoints/orders/list.php';
                 }
             } elseif($method === 'POST') {
-                if($param === 'suppliers') {
+                // Verificar si es una ruta de proveedores
+                if(count($path_parts) >= 2 && $path_parts[1] === 'suppliers') {
                     // POST /api/orders/{id}/suppliers
-                    $_GET['id'] = $path_parts[0]; // El ID de la orden está en la primera parte
+                    $_GET['id'] = $path_parts[0];
                     include 'api/endpoints/orders/add_suppliers.php';
                 } else {
+                    // POST /api/orders
                     include 'api/endpoints/orders/create.php';
                 }
             } elseif($method === 'PUT') {
@@ -139,8 +141,9 @@ try {
                     echo json_encode(['error' => 'ID requerido para actualización']);
                 }
             } elseif($method === 'DELETE') {
-                // DELETE /api/orders/{id}/suppliers/{supplier_id}
-                if($param === 'suppliers' && isset($path_parts[2])) {
+                // Verificar si es una ruta de proveedores
+                if(count($path_parts) >= 3 && $path_parts[1] === 'suppliers') {
+                    // DELETE /api/orders/{id}/suppliers/{supplier_id}
                     $_GET['id'] = $path_parts[0];
                     $_GET['supplier_id'] = $path_parts[2];
                     include 'api/endpoints/orders/remove_supplier.php';
