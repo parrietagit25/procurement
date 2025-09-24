@@ -19,7 +19,7 @@ if (strpos($path, $basePath) === 0) {
 
 error_log("Router Debug - After removing base: " . $path);
 
-// Si la ruta comienza con /api/, manejar la API
+// Si la ruta comienza con /api/, manejar la API directamente
 if (strpos($path, '/api/') === 0) {
     error_log("Router Debug - API route detected: " . $path);
     
@@ -35,15 +35,107 @@ if (strpos($path, '/api/') === 0) {
         exit;
     }
     
-    // Simular la ruta de la API para el archivo api/index.php
-    $_SERVER['REQUEST_URI'] = $path;
+    // Habilitar logging de errores para la API
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('log_errors', 1);
     
-    // Incluir el archivo de la API
-    ob_start();
-    include 'api/index.php';
-    $output = ob_get_clean();
-    
-    echo $output;
+    try {
+        require_once __DIR__ . '/config/database.php';
+        require_once __DIR__ . '/classes/Auth.php';
+        require_once __DIR__ . '/classes/User.php';
+        require_once __DIR__ . '/classes/Supplier.php';
+        require_once __DIR__ . '/classes/PurchaseOrder.php';
+        require_once __DIR__ . '/classes/Product.php';
+        require_once __DIR__ . '/classes/Category.php';
+
+        $db = getDB();
+        if (!$db) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error de conexión a la base de datos']);
+            exit;
+        }
+        
+        $auth = new Auth($db);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Error al inicializar la aplicación: ' . $e->getMessage()]);
+        exit;
+    }
+
+    // Obtener método y ruta
+    $method = $_SERVER['REQUEST_METHOD'];
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+    // Obtener datos del cuerpo de la petición
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    // Debug: mostrar la ruta que se está procesando
+    error_log("API Path: " . $path);
+
+    // Router simple de la API
+    try {
+        switch($path) {
+            case '/api/suppliers':
+                if($method === 'GET') {
+                    include 'api/endpoints/suppliers/list.php';
+                } elseif($method === 'POST') {
+                    include 'api/endpoints/suppliers/create.php';
+                } else {
+                    http_response_code(405);
+                    echo json_encode(['error' => 'Método no permitido']);
+                }
+                break;
+                
+            case '/api/orders':
+                if($method === 'GET') {
+                    include 'api/endpoints/orders/list.php';
+                } elseif($method === 'POST') {
+                    include 'api/endpoints/orders/create.php';
+                } else {
+                    http_response_code(405);
+                    echo json_encode(['error' => 'Método no permitido']);
+                }
+                break;
+                
+            case '/api/products':
+                if($method === 'GET') {
+                    include 'api/endpoints/products/list.php';
+                } elseif($method === 'POST') {
+                    include 'api/endpoints/products/create.php';
+                } else {
+                    http_response_code(405);
+                    echo json_encode(['error' => 'Método no permitido']);
+                }
+                break;
+                
+            case '/api/categories':
+                if($method === 'GET') {
+                    include 'api/endpoints/categories/list.php';
+                } else {
+                    http_response_code(405);
+                    echo json_encode(['error' => 'Método no permitido']);
+                }
+                break;
+                
+            case '/api/admin/dashboard_stats':
+                if($method === 'GET') {
+                    include 'api/endpoints/admin/dashboard_stats.php';
+                } else {
+                    http_response_code(405);
+                    echo json_encode(['error' => 'Método no permitido']);
+                }
+                break;
+                
+            default:
+                http_response_code(404);
+                echo json_encode(['error' => 'Endpoint no encontrado', 'path' => $path]);
+                break;
+        }
+    } catch(Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Error interno del servidor: ' . $e->getMessage()]);
+    }
     exit;
 }
 
