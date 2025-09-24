@@ -124,7 +124,7 @@ try {
             } elseif($method === 'POST') {
                 if($param === 'suppliers') {
                     // POST /api/orders/{id}/suppliers
-                    $_GET['id'] = $path_parts[1]; // El ID de la orden está en la segunda parte
+                    $_GET['id'] = $path_parts[0]; // El ID de la orden está en la primera parte
                     include 'api/endpoints/orders/add_suppliers.php';
                 } else {
                     include 'api/endpoints/orders/create.php';
@@ -141,7 +141,7 @@ try {
             } elseif($method === 'DELETE') {
                 // DELETE /api/orders/{id}/suppliers/{supplier_id}
                 if($param === 'suppliers' && isset($path_parts[2])) {
-                    $_GET['id'] = $path_parts[1];
+                    $_GET['id'] = $path_parts[0];
                     $_GET['supplier_id'] = $path_parts[2];
                     include 'api/endpoints/orders/remove_supplier.php';
                 } else {

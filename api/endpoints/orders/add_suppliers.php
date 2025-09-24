@@ -68,7 +68,7 @@ try {
     }
     
     // Actualizar estado de la orden si es necesario
-    if($order->status === 'borrador') {
+    if($orderData['status'] === 'borrador') {
         $order->updateStatus('enviado');
     }
     
