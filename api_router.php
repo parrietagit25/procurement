@@ -146,7 +146,7 @@ try {
                     include 'api/endpoints/orders/remove_supplier.php';
                 } else {
                     http_response_code(400);
-                    echo json_encode(['error' => 'Ruta de eliminación no válida']);
+                    echo json_encode(['error' => 'Ruta de eliminación no válida', 'path' => $api_path, 'param' => $param, 'path_parts' => $path_parts]);
                 }
             } else {
                 http_response_code(405);
