@@ -10,16 +10,33 @@ if($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../classes/Auth.php';
-require_once __DIR__ . '/../classes/User.php';
-require_once __DIR__ . '/../classes/Supplier.php';
-require_once __DIR__ . '/../classes/PurchaseOrder.php';
-require_once __DIR__ . '/../classes/Product.php';
-require_once __DIR__ . '/../classes/Category.php';
+// Habilitar logging de errores
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
 
-$db = getDB();
-$auth = new Auth($db);
+try {
+    require_once __DIR__ . '/../config/database.php';
+    require_once __DIR__ . '/../classes/Auth.php';
+    require_once __DIR__ . '/../classes/User.php';
+    require_once __DIR__ . '/../classes/Supplier.php';
+    require_once __DIR__ . '/../classes/PurchaseOrder.php';
+    require_once __DIR__ . '/../classes/Product.php';
+    require_once __DIR__ . '/../classes/Category.php';
+
+    $db = getDB();
+    if (!$db) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Error de conexión a la base de datos']);
+        exit;
+    }
+    
+    $auth = new Auth($db);
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Error al inicializar la aplicación: ' . $e->getMessage()]);
+    exit;
+}
 
 // Obtener método y ruta
 $method = $_SERVER['REQUEST_METHOD'];

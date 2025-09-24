@@ -1,7 +1,7 @@
 <?php
 // Configuración general del sistema
 define('SITE_NAME', 'Sistema de Procurement');
-define('SITE_URL', 'http://localhost/procurement');
+define('SITE_URL', 'https://procurement.grupopcr.com.pa');
 define('ADMIN_EMAIL', 'admin@procurement.com');
 
 // Configuración de JWT
