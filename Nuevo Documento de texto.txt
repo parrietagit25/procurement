@@ -1,0 +1,4 @@
+curl -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBwcm9jdXJlbWVudC5jb20iLCJyb2xlIjoiYWRtaW4iLCJ1c2VyX3R5cGUiOiJhZG1pbiIsImlhdCI6MTc1ODY2MTkzNiwiZXhwIjoxNzU4NjY1NTM2fQ.C6xEwbWgirKL0eVCiywjutVQYJMoxwKvIVOeqSX4-WU" http://10.10.2.115/procurement/api/admin/dashboard_stats
+
+
+54.207.241.212
