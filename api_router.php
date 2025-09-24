@@ -123,9 +123,9 @@ try {
                 }
             } elseif($method === 'POST') {
                 // Verificar si es una ruta de proveedores
-                if(count($path_parts) >= 2 && $path_parts[1] === 'suppliers') {
+                if(count($path_parts) >= 3 && $path_parts[2] === 'suppliers') {
                     // POST /api/orders/{id}/suppliers
-                    $_GET['id'] = $path_parts[0];
+                    $_GET['id'] = $path_parts[1];
                     include 'api/endpoints/orders/add_suppliers.php';
                 } else {
                     // POST /api/orders
@@ -142,10 +142,10 @@ try {
                 }
             } elseif($method === 'DELETE') {
                 // Verificar si es una ruta de proveedores
-                if(count($path_parts) >= 3 && $path_parts[1] === 'suppliers') {
+                if(count($path_parts) >= 4 && $path_parts[2] === 'suppliers') {
                     // DELETE /api/orders/{id}/suppliers/{supplier_id}
-                    $_GET['id'] = $path_parts[0];
-                    $_GET['supplier_id'] = $path_parts[2];
+                    $_GET['id'] = $path_parts[1];
+                    $_GET['supplier_id'] = $path_parts[3];
                     include 'api/endpoints/orders/remove_supplier.php';
                 } else {
                     http_response_code(400);
