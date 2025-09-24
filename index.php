@@ -1,10 +1,15 @@
 <?php
 // Router principal del sistema de procurement
-header('Content-Type: text/html; charset=UTF-8');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 // Obtener la ruta solicitada
 $request_uri = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_uri, PHP_URL_PATH);
+
+// Debug: mostrar información de la ruta
+error_log("Router Debug - REQUEST_URI: " . $request_uri);
+error_log("Router Debug - Parsed Path: " . $path);
 
 // Eliminar la ruta base si existe
 $basePath = '/procurement';
@@ -12,8 +17,24 @@ if (strpos($path, $basePath) === 0) {
     $path = substr($path, strlen($basePath));
 }
 
-// Si la ruta comienza con /api/, redirigir a la API
+error_log("Router Debug - After removing base: " . $path);
+
+// Si la ruta comienza con /api/, manejar la API
 if (strpos($path, '/api/') === 0) {
+    error_log("Router Debug - API route detected: " . $path);
+    
+    // Establecer headers para la API
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    
+    // Manejar preflight requests
+    if($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(200);
+        exit;
+    }
+    
     // Simular la ruta de la API para el archivo api/index.php
     $_SERVER['REQUEST_URI'] = $path;
     
@@ -22,8 +43,6 @@ if (strpos($path, '/api/') === 0) {
     include 'api/index.php';
     $output = ob_get_clean();
     
-    // Establecer el content-type correcto para la API
-    header('Content-Type: application/json');
     echo $output;
     exit;
 }
@@ -59,6 +78,7 @@ http_response_code(404);
                 <h1>404</h1>
                 <h2>Página no encontrada</h2>
                 <p>La página que buscas no existe.</p>
+                <p><strong>Ruta solicitada:</strong> <?php echo htmlspecialchars($path); ?></p>
                 <a href="/" class="btn btn-primary">Volver al inicio</a>
             </div>
         </div>
