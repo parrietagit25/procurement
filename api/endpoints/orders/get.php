@@ -8,6 +8,15 @@ if($auth_user['type'] !== 'admin') {
     exit;
 }
 
+// Obtener el ID de la orden desde los parámetros GET
+$order_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if(!$order_id) {
+    http_response_code(400);
+    echo json_encode(['error' => 'ID de orden requerido']);
+    exit;
+}
+
 try {
     $order = new PurchaseOrder($db);
     $orderData = $order->getById($order_id);
