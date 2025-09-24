@@ -39,6 +39,10 @@ if (strpos($path, '/api/') !== 0) {
     exit;
 }
 
+// Obtener la ruta relativa de la API (sin /api/)
+$api_path = substr($path, 5); // Remover '/api/'
+error_log("API Router Debug - API Path: " . $api_path);
+
 // Inicializar la base de datos y clases
 try {
     require_once __DIR__ . '/config/database.php';
@@ -65,18 +69,17 @@ try {
 
 // Obtener método y ruta
 $method = $_SERVER['REQUEST_METHOD'];
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Obtener datos del cuerpo de la petición
 $input = json_decode(file_get_contents('php://input'), true);
 
 // Debug: mostrar la ruta que se está procesando
-error_log("API Router - Processing path: " . $path);
+error_log("API Router - Processing API path: " . $api_path);
 
 // Router de la API
 try {
-    switch($path) {
-        case '/api/suppliers':
+    switch($api_path) {
+        case 'suppliers':
             if($method === 'GET') {
                 include 'api/endpoints/suppliers/list.php';
             } elseif($method === 'POST') {
@@ -87,7 +90,7 @@ try {
             }
             break;
             
-        case '/api/orders':
+        case 'orders':
             if($method === 'GET') {
                 include 'api/endpoints/orders/list.php';
             } elseif($method === 'POST') {
@@ -98,7 +101,7 @@ try {
             }
             break;
             
-        case '/api/products':
+        case 'products':
             if($method === 'GET') {
                 include 'api/endpoints/products/list.php';
             } elseif($method === 'POST') {
@@ -109,7 +112,7 @@ try {
             }
             break;
             
-        case '/api/categories':
+        case 'categories':
             if($method === 'GET') {
                 include 'api/endpoints/categories/list.php';
             } else {
@@ -118,7 +121,7 @@ try {
             }
             break;
             
-        case '/api/admin/dashboard_stats':
+        case 'admin/dashboard_stats':
             if($method === 'GET') {
                 include 'api/endpoints/admin/dashboard_stats.php';
             } else {
@@ -129,7 +132,7 @@ try {
             
         default:
             http_response_code(404);
-            echo json_encode(['error' => 'Endpoint no encontrado', 'path' => $path]);
+            echo json_encode(['error' => 'Endpoint no encontrado', 'path' => $api_path]);
             break;
     }
 } catch(Exception $e) {
