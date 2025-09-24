@@ -2,6 +2,15 @@
 // Endpoint: GET /api/quotations/{id}
 $auth_user = $auth->requireAuth();
 
+// Obtener el ID de la cotización desde los parámetros GET
+$quotation_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if(!$quotation_id) {
+    http_response_code(400);
+    echo json_encode(['error' => 'ID de cotización requerido']);
+    exit;
+}
+
 try {
     // Obtener datos completos de la cotización
     $query = "SELECT q.*, s.company_name as supplier_name, s.contact_name, s.email, s.phone,

@@ -8,6 +8,15 @@ if($auth_user['type'] !== 'admin') {
     exit;
 }
 
+// Obtener el ID del proveedor desde los parámetros GET
+$supplier_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if(!$supplier_id) {
+    http_response_code(400);
+    echo json_encode(['error' => 'ID de proveedor requerido']);
+    exit;
+}
+
 try {
     $supplier = new Supplier($db);
     

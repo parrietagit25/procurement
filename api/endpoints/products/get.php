@@ -8,6 +8,15 @@ if($auth_user['type'] !== 'admin') {
     exit;
 }
 
+// Obtener el ID del producto desde los parámetros GET
+$product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if(!$product_id) {
+    http_response_code(400);
+    echo json_encode(['error' => 'ID de producto requerido']);
+    exit;
+}
+
 try {
     // Obtener datos completos del producto desde la base de datos
     $query = "SELECT p.*, c.name as category_name 
