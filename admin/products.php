@@ -266,7 +266,7 @@
         // Función para renovar token
         async function refreshToken() {
             try {
-                const response = await fetch('/procurement/api/login_unified.php', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/login_unified.php', {
                     method: 'POST',
                     body: new URLSearchParams({
                         'username': 'admin',
@@ -314,7 +314,7 @@
         // Cargar productos
         async function loadProducts() {
             try {
-                const response = await fetch('/procurement/api/products', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/products', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -345,7 +345,7 @@
         // Cargar categorías
         async function loadCategories() {
             try {
-                const response = await fetch('/procurement/api/categories', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/categories', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -440,7 +440,7 @@
         
         async function viewProduct(productId) {
             try {
-                const response = await fetch(`/procurement/api/products/${productId}`, {
+                const response = await fetch(`https://procurement.grupopcr.com.pa/api/products/${productId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -461,7 +461,7 @@
         
         async function editProduct(productId) {
             try {
-                const response = await fetch(`/procurement/api/products/${productId}`, {
+                const response = await fetch(`https://procurement.grupopcr.com.pa/api/products/${productId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -483,7 +483,7 @@
         // Cargar proveedores para el select
         async function loadSuppliersForSelect() {
             try {
-                const response = await fetch('/procurement/api/suppliers', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/suppliers', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -565,7 +565,7 @@
         // Cargar categorías para el select
         async function loadCategoriesForSelect() {
             try {
-                const response = await fetch('/procurement/api/categories', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/categories', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -608,8 +608,8 @@
             
             try {
                 const url = productId ? 
-                    `/procurement/api/products/${productId}` : 
-                    '/procurement/api/products';
+                    `https://procurement.grupopcr.com.pa/api/products/${productId}` : 
+                    'https://procurement.grupopcr.com.pa/api/products';
                 
                 const method = productId ? 'PUT' : 'POST';
                 

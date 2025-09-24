@@ -221,7 +221,7 @@
         // Función para renovar token
         async function refreshToken() {
             try {
-                const response = await fetch('/procurement/api/login_unified.php', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/login_unified.php', {
                     method: 'POST',
                     body: new URLSearchParams({
                         'username': 'admin',
@@ -273,7 +273,7 @@
         // Cargar cotizaciones
         async function loadQuotations() {
             try {
-                const response = await fetch('/procurement/api/quotations', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/quotations', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -303,7 +303,7 @@
         // Cargar órdenes para filtro
         async function loadOrders() {
             try {
-                const response = await fetch('/procurement/api/orders', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/orders', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -331,7 +331,7 @@
         // Cargar proveedores para filtro
         async function loadSuppliers() {
             try {
-                const response = await fetch('/procurement/api/suppliers', {
+                const response = await fetch('https://procurement.grupopcr.com.pa/api/suppliers', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -438,7 +438,7 @@
         // Ver cotización
         async function viewQuotation(quotationId) {
             try {
-                const response = await fetch(`/procurement/api/quotations/${quotationId}`, {
+                const response = await fetch(`https://procurement.grupopcr.com.pa/api/quotations/${quotationId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -543,7 +543,7 @@
             const data = Object.fromEntries(formData);
             
             try {
-                const response = await fetch(`/procurement/api/quotations/${quotationId}`, {
+                const response = await fetch(`https://procurement.grupopcr.com.pa/api/quotations/${quotationId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
