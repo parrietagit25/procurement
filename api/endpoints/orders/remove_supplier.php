@@ -8,13 +8,13 @@ if($auth_user['type'] !== 'admin') {
     exit;
 }
 
-// Obtener order_id y supplier_id de las variables globales del API Gateway
-$order_id = $GLOBALS['order_id'] ?? null;
-$supplier_id = $GLOBALS['supplier_id'] ?? null;
+// Obtener order_id y supplier_id desde los parámetros GET
+$order_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 0;
 
-if(!is_numeric($order_id) || !is_numeric($supplier_id)) {
+if(!$order_id || !$supplier_id) {
     http_response_code(400);
-    echo json_encode(['error' => 'IDs de orden y proveedor inválidos']);
+    echo json_encode(['error' => 'IDs de orden y proveedor requeridos']);
     exit;
 }
 

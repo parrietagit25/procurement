@@ -8,6 +8,15 @@ if($auth_user['type'] !== 'admin') {
     exit;
 }
 
+// Obtener el ID de la orden desde los parámetros GET
+$order_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if(!$order_id) {
+    http_response_code(400);
+    echo json_encode(['error' => 'ID de orden requerido']);
+    exit;
+}
+
 if(!isset($input['supplier_ids']) || !is_array($input['supplier_ids'])) {
     http_response_code(400);
     echo json_encode(['error' => 'supplier_ids es requerido y debe ser un array']);
@@ -17,7 +26,8 @@ if(!isset($input['supplier_ids']) || !is_array($input['supplier_ids'])) {
 try {
     // Verificar que la orden existe
     $order = new PurchaseOrder($db);
-    if(!$order->getById($order_id)) {
+    $orderData = $order->getById($order_id);
+    if(!$orderData) {
         http_response_code(404);
         echo json_encode(['error' => 'Orden no encontrada']);
         exit;

@@ -122,7 +122,13 @@ try {
                     include 'api/endpoints/orders/list.php';
                 }
             } elseif($method === 'POST') {
-                include 'api/endpoints/orders/create.php';
+                if($param === 'suppliers') {
+                    // POST /api/orders/{id}/suppliers
+                    $_GET['id'] = $path_parts[1]; // El ID de la orden está en la segunda parte
+                    include 'api/endpoints/orders/add_suppliers.php';
+                } else {
+                    include 'api/endpoints/orders/create.php';
+                }
             } elseif($method === 'PUT') {
                 // PUT /api/orders/{id}
                 if($param) {
@@ -131,6 +137,16 @@ try {
                 } else {
                     http_response_code(400);
                     echo json_encode(['error' => 'ID requerido para actualización']);
+                }
+            } elseif($method === 'DELETE') {
+                // DELETE /api/orders/{id}/suppliers/{supplier_id}
+                if($param === 'suppliers' && isset($path_parts[2])) {
+                    $_GET['id'] = $path_parts[1];
+                    $_GET['supplier_id'] = $path_parts[2];
+                    include 'api/endpoints/orders/remove_supplier.php';
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Ruta de eliminación no válida']);
                 }
             } else {
                 http_response_code(405);
