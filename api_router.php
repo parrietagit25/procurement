@@ -170,13 +170,29 @@ try {
             } elseif($method === 'POST') {
                 include 'api/endpoints/products/create.php';
             } elseif($method === 'PUT') {
-                // PUT /api/products/{id}
+                // Verificar si es toggle-status
+                if(count($path_parts) >= 3 && $path_parts[2] === 'toggle-status') {
+                    // PUT /api/products/{id}/toggle-status
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/products/toggle_status.php';
+                } else {
+                    // PUT /api/products/{id}
+                    if($param) {
+                        $_GET['id'] = $param;
+                        include 'api/endpoints/products/update.php';
+                    } else {
+                        http_response_code(400);
+                        echo json_encode(['error' => 'ID requerido para actualización']);
+                    }
+                }
+            } elseif($method === 'DELETE') {
+                // DELETE /api/products/{id}
                 if($param) {
                     $_GET['id'] = $param;
-                    include 'api/endpoints/products/update.php';
+                    include 'api/endpoints/products/delete.php';
                 } else {
                     http_response_code(400);
-                    echo json_encode(['error' => 'ID requerido para actualización']);
+                    echo json_encode(['error' => 'ID requerido para eliminación']);
                 }
             } else {
                 http_response_code(405);

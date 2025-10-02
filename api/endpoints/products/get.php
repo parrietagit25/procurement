@@ -3,6 +3,15 @@
 $auth_user = $auth->requireAuth();
 
 try {
+    // Obtener ID del producto desde GET
+    $product_id = $_GET['id'] ?? null;
+    
+    if(!$product_id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'ID del producto requerido']);
+        exit;
+    }
+    
     // Obtener producto con información de categoría
     $query = "SELECT p.*, c.name as category_name
               FROM products p 

@@ -9,6 +9,15 @@ if($auth_user['type'] !== 'admin') {
 }
 
 try {
+    // Obtener ID del producto desde GET
+    $product_id = $_GET['id'] ?? null;
+    
+    if(!$product_id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'ID del producto requerido']);
+        exit;
+    }
+    
     // Verificar que el producto existe
     $query = "SELECT id, name FROM products WHERE id = :id";
     $stmt = $db->prepare($query);
