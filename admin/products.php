@@ -395,6 +395,12 @@
                             <button class="btn btn-sm btn-outline-secondary" onclick="editProduct(${product.id})" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </button>
+                            <button class="btn btn-sm btn-outline-${product.is_active ? 'warning' : 'success'}" onclick="toggleProductStatus(${product.id})" title="${product.is_active ? 'Desactivar' : 'Activar'}">
+                                <i class="fas fa-${product.is_active ? 'pause' : 'play'}"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct(${product.id}, '${product.name}')" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -658,6 +664,72 @@
             } catch(error) {
                 console.error('Error saving product:', error);
                 alert('Error al guardar el producto');
+            }
+        }
+        
+        // Eliminar producto
+        async function deleteProduct(productId, productName) {
+            if(confirm(`¿Está seguro de que desea eliminar el producto "${productName}"?\n\nEsta acción no se puede deshacer.`)) {
+                try {
+                    const response = await fetch(`https://procurement.grupopcr.com.pa/api/products/${productId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        }
+                    });
+                    
+                    if(response.status === 401) {
+                        await refreshToken();
+                        return deleteProduct(productId, productName);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if(result.success) {
+                        alert(`Producto "${result.deleted_product}" eliminado exitosamente`);
+                        loadProducts();
+                    } else {
+                        if(result.used_in_orders) {
+                            alert(`No se puede eliminar el producto porque está siendo usado en ${result.used_in_orders} órdenes de compra`);
+                        } else {
+                            alert('Error: ' + (result.message || result.error));
+                        }
+                    }
+                } catch(error) {
+                    console.error('Error deleting product:', error);
+                    alert('Error al eliminar el producto');
+                }
+            }
+        }
+        
+        // Cambiar estado del producto (activar/desactivar)
+        async function toggleProductStatus(productId) {
+            try {
+                const response = await fetch(`https://procurement.grupopcr.com.pa/api/products/${productId}/toggle-status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                if(response.status === 401) {
+                    await refreshToken();
+                    return toggleProductStatus(productId);
+                }
+                
+                const result = await response.json();
+                
+                if(result.success) {
+                    alert(`Producto "${result.product_name}" ${result.message}`);
+                    loadProducts();
+                } else {
+                    alert('Error: ' + (result.message || result.error));
+                }
+            } catch(error) {
+                console.error('Error toggling product status:', error);
+                alert('Error al cambiar el estado del producto');
             }
         }
         

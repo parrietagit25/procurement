@@ -223,6 +223,18 @@ try {
                 include 'endpoints/products/get.php';
             } elseif($method === 'PUT') {
                 include 'endpoints/products/update.php';
+            } elseif($method === 'DELETE') {
+                include 'endpoints/products/delete.php';
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Método no permitido']);
+            }
+            break;
+            
+        case (preg_match('/^\/products\/(\d+)\/toggle-status$/', $path, $matches) ? true : false):
+            $product_id = $matches[1];
+            if($method === 'PUT') {
+                include 'endpoints/products/toggle_status.php';
             } else {
                 http_response_code(405);
                 echo json_encode(['error' => 'Método no permitido']);
