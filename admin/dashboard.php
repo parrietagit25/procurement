@@ -275,7 +275,7 @@
         // Cargar dashboard
         async function loadDashboard() {
             try {
-                const response = await fetch('api/admin/dashboard_stats', {
+                const response = await fetch('/procurement/api/admin/dashboard_stats', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }

@@ -309,7 +309,7 @@
         // Cargar proveedores
         async function loadSuppliers() {
             try {
-                const response = await fetch('api/suppliers', {
+                const response = await fetch('/procurement/api/suppliers', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -376,7 +376,7 @@
             orderData.status = 'borrador';
             
             try {
-                const response = await fetch('api/orders', {
+                const response = await fetch('/procurement/api/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -407,7 +407,7 @@
             orderData.status = 'enviado';
             
             try {
-                const response = await fetch('api/orders', {
+                const response = await fetch('/procurement/api/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -438,7 +438,7 @@
         // Asignar proveedores
         async function assignSuppliers(orderId) {
             try {
-                const response = await fetch(`api/orders/${orderId}/suppliers`, {
+                const response = await fetch(`/procurement/api/orders/${orderId}/suppliers`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
