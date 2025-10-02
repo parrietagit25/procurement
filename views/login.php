@@ -113,7 +113,7 @@
             const formData = new FormData(this);
             
             try {
-                const response = await fetch('https://procurement.grupopcr.com.pa/api/login_unified.php', {
+                const response = await fetch('/api/login_unified.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -128,9 +128,9 @@
                     
                     // Redirigir según el tipo de usuario
                     if(result.user) {
-                        window.location.href = 'https://procurement.grupopcr.com.pa/admin/dashboard.php';
+                        window.location.href = '/admin/dashboard.php';
                     } else {
-                        window.location.href = 'https://procurement.grupopcr.com.pa/supplier/dashboard.php';
+                        window.location.href = '/supplier/dashboard.php';
                     }
                 } else {
                     alert('Error: ' + (result.message || result.error));

@@ -244,7 +244,7 @@
         // Función para renovar token
         async function refreshToken() {
             try {
-                const response = await fetch('/procurement/api/login_unified.php', {
+                const response = await fetch('/api/login_unified.php', {
                     method: 'POST',
                     body: new URLSearchParams({
                         'username': 'admin',
@@ -456,7 +456,7 @@
         // Ver orden
         async function viewOrder(orderId) {
             try {
-                const response = await fetch(`/procurement/api/orders/${orderId}`, {
+                const response = await fetch(`/api/orders/${orderId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
