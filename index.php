@@ -128,6 +128,34 @@ if (strpos($path, '/api/') === 0) {
                 break;
                 
             default:
+                // Manejar rutas dinámicas de productos
+                if(preg_match('/^\/api\/products\/(\d+)$/', $path, $matches)) {
+                    $product_id = $matches[1];
+                    if($method === 'GET') {
+                        include 'api/endpoints/products/get.php';
+                    } elseif($method === 'PUT') {
+                        include 'api/endpoints/products/update.php';
+                    } elseif($method === 'DELETE') {
+                        include 'api/endpoints/products/delete.php';
+                    } else {
+                        http_response_code(405);
+                        echo json_encode(['error' => 'Método no permitido']);
+                    }
+                    break;
+                }
+                
+                if(preg_match('/^\/api\/products\/(\d+)\/toggle-status$/', $path, $matches)) {
+                    $product_id = $matches[1];
+                    if($method === 'PUT') {
+                        include 'api/endpoints/products/toggle_status.php';
+                    } else {
+                        http_response_code(405);
+                        echo json_encode(['error' => 'Método no permitido']);
+                    }
+                    break;
+                }
+                
+                // Si no coincide con ninguna ruta
                 http_response_code(404);
                 echo json_encode(['error' => 'Endpoint no encontrado', 'path' => $path]);
                 break;
