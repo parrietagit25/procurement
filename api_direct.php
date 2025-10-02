@@ -1,5 +1,9 @@
 <?php
-// Test directo de la API sin .htaccess
+// Router directo para API (solución definitiva)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Establecer headers para la API
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -11,11 +15,34 @@ if($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Habilitar logging de errores
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('log_errors', 1);
+// Obtener la ruta solicitada
+$request_uri = $_SERVER['REQUEST_URI'];
+$path = parse_url($request_uri, PHP_URL_PATH);
 
+// Debug
+error_log("API Direct Debug - REQUEST_URI: " . $request_uri);
+error_log("API Direct Debug - Parsed Path: " . $path);
+
+// Eliminar la ruta base si existe
+$basePath = '/procurement';
+if (strpos($path, $basePath) === 0) {
+    $path = substr($path, strlen($basePath));
+}
+
+error_log("API Direct Debug - After removing base: " . $path);
+
+// Verificar que sea una ruta de API
+if (strpos($path, '/api/') !== 0) {
+    http_response_code(404);
+    echo json_encode(['error' => 'No es una ruta de API válida', 'path' => $path]);
+    exit;
+}
+
+// Obtener la ruta relativa de la API (sin /api/)
+$api_path = substr($path, 5); // Remover '/api/'
+error_log("API Direct Debug - API Path: " . $api_path);
+
+// Inicializar la base de datos y clases
 try {
     require_once __DIR__ . '/config/database.php';
     require_once __DIR__ . '/classes/Auth.php';
@@ -41,35 +68,193 @@ try {
 
 // Obtener método y ruta
 $method = $_SERVER['REQUEST_METHOD'];
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Obtener datos del cuerpo de la petición
 $input = json_decode(file_get_contents('php://input'), true);
 
 // Debug: mostrar la ruta que se está procesando
-error_log("API Direct Path: " . $path);
+error_log("API Direct - Processing API path: " . $api_path);
 
-// Router simple de la API
+// Router de la API
 try {
-    switch($path) {
-        case '/api_direct.php':
-        case '/api_direct.php/suppliers':
+    // Manejar rutas con parámetros
+    $path_parts = explode('/', trim($api_path, '/'));
+    $endpoint = $path_parts[0] ?? '';
+    $param = isset($path_parts[1]) ? $path_parts[1] : null;
+    
+    error_log("API Direct - Endpoint: " . $endpoint . ", Param: " . ($param ?? 'null'));
+    
+    switch($endpoint) {
+        case 'suppliers':
             if($method === 'GET') {
-                // Simular datos de proveedores
-                echo json_encode([
-                    'success' => true,
-                    'data' => [
-                        [
-                            'id' => 1,
-                            'company_name' => 'Proveedor de Prueba',
-                            'contact_name' => 'Juan Pérez',
-                            'email' => 'juan@proveedor.com',
-                            'phone' => '555-1234',
-                            'status' => 'approved',
-                            'created_at' => date('Y-m-d H:i:s')
-                        ]
-                    ]
-                ]);
+                if($param) {
+                    // GET /api/suppliers/{id}
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/suppliers/get.php';
+                } else {
+                    // GET /api/suppliers
+                    include 'api/endpoints/suppliers/list.php';
+                }
+            } elseif($method === 'POST') {
+                include 'api/endpoints/suppliers/create.php';
+            } elseif($method === 'PUT') {
+                // PUT /api/suppliers/{id}
+                if($param) {
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/suppliers/update.php';
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'ID requerido para actualización']);
+                }
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Método no permitido']);
+            }
+            break;
+            
+        case 'orders':
+            if($method === 'GET') {
+                if($param) {
+                    // GET /api/orders/{id}
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/orders/get.php';
+                } else {
+                    // GET /api/orders
+                    include 'api/endpoints/orders/list.php';
+                }
+            } elseif($method === 'POST') {
+                // Verificar si es una ruta de proveedores
+                if(count($path_parts) >= 3 && $path_parts[2] === 'suppliers') {
+                    // POST /api/orders/{id}/suppliers
+                    $_GET['id'] = $path_parts[1];
+                    include 'api/endpoints/orders/add_suppliers.php';
+                } else {
+                    // POST /api/orders
+                    include 'api/endpoints/orders/create.php';
+                }
+            } elseif($method === 'PUT') {
+                // PUT /api/orders/{id}
+                if($param) {
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/orders/update.php';
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'ID requerido para actualización']);
+                }
+            } elseif($method === 'DELETE') {
+                // Verificar si es una ruta de proveedores
+                if(count($path_parts) >= 4 && $path_parts[2] === 'suppliers') {
+                    // DELETE /api/orders/{id}/suppliers/{supplier_id}
+                    $_GET['id'] = $path_parts[1];
+                    $_GET['supplier_id'] = $path_parts[3];
+                    include 'api/endpoints/orders/remove_supplier.php';
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Ruta de eliminación no válida']);
+                }
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Método no permitido']);
+            }
+            break;
+            
+        case 'products':
+            if($method === 'GET') {
+                if($param) {
+                    // GET /api/products/{id}
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/products/get.php';
+                } else {
+                    // GET /api/products
+                    include 'api/endpoints/products/list.php';
+                }
+            } elseif($method === 'POST') {
+                include 'api/endpoints/products/create.php';
+            } elseif($method === 'PUT') {
+                // Verificar si es toggle-status
+                if(count($path_parts) >= 3 && $path_parts[2] === 'toggle-status') {
+                    // PUT /api/products/{id}/toggle-status
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/products/toggle_status.php';
+                } else {
+                    // PUT /api/products/{id}
+                    if($param) {
+                        $_GET['id'] = $param;
+                        include 'api/endpoints/products/update.php';
+                    } else {
+                        http_response_code(400);
+                        echo json_encode(['error' => 'ID requerido para actualización']);
+                    }
+                }
+            } elseif($method === 'DELETE') {
+                // DELETE /api/products/{id}
+                if($param) {
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/products/delete.php';
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'ID requerido para eliminación']);
+                }
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Método no permitido']);
+            }
+            break;
+            
+        case 'categories':
+            if($method === 'GET') {
+                include 'api/endpoints/categories/list.php';
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Método no permitido']);
+            }
+            break;
+            
+        case 'admin':
+            if($param === 'dashboard_stats' && $method === 'GET') {
+                include 'api/endpoints/admin/dashboard_stats.php';
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Endpoint no encontrado', 'path' => $api_path, 'endpoint' => $endpoint, 'param' => $param]);
+            }
+            break;
+            
+        case 'supplier':
+            if($param === 'dashboard_stats' && $method === 'GET') {
+                include 'api/endpoints/supplier/dashboard_stats.php';
+            } elseif($param === 'orders' && $method === 'GET') {
+                include 'api/endpoints/supplier/orders.php';
+            } elseif($param === 'quotations' && $method === 'GET') {
+                include 'api/endpoints/supplier/quotations.php';
+            } elseif($param === 'submit_quotation' && $method === 'POST') {
+                include 'api/endpoints/supplier/submit_quotation.php';
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Endpoint no encontrado', 'path' => $api_path]);
+            }
+            break;
+            
+        case 'quotations':
+            if($method === 'GET') {
+                if($param) {
+                    // GET /api/quotations/{id}
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/quotations/get.php';
+                } else {
+                    // GET /api/quotations
+                    include 'api/endpoints/quotations/list.php';
+                }
+            } elseif($method === 'POST') {
+                include 'api/endpoints/quotations/create.php';
+            } elseif($method === 'PUT') {
+                // PUT /api/quotations/{id}
+                if($param) {
+                    $_GET['id'] = $param;
+                    include 'api/endpoints/quotations/update.php';
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'ID requerido para actualización']);
+                }
             } else {
                 http_response_code(405);
                 echo json_encode(['error' => 'Método no permitido']);
@@ -78,11 +263,14 @@ try {
             
         default:
             http_response_code(404);
-            echo json_encode([
-                'error' => 'Endpoint no encontrado',
-                'path' => $path,
-                'method' => $method
-            ]);
+            echo json_encode(['error' => 'Endpoint no encontrado', 'path' => $api_path, 'endpoint' => $endpoint, 'available_endpoints' => [
+                'GET /api/products',
+                'GET /api/suppliers',
+                'GET /api/orders', 
+                'GET /api/categories',
+                'GET /api/admin/dashboard_stats',
+                'GET /api/quotations'
+            ]]);
             break;
     }
 } catch(Exception $e) {
