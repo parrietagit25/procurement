@@ -266,7 +266,7 @@
         // Función para renovar token
         async function refreshToken() {
             try {
-                const response = await fetch('https://procurement.grupopcr.com.pa/api/login_unified.php', {
+                const response = await fetch('/procurement/api/login_unified.php', {
                     method: 'POST',
                     body: new URLSearchParams({
                         'username': 'admin',
@@ -314,7 +314,7 @@
         // Cargar productos
         async function loadProducts() {
             try {
-                const response = await fetch('https://procurement.grupopcr.com.pa/api/products', {
+                const response = await fetch('/procurement/api/products', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -345,7 +345,7 @@
         // Cargar categorías
         async function loadCategories() {
             try {
-                const response = await fetch('https://procurement.grupopcr.com.pa/api/categories', {
+                const response = await fetch('/procurement/api/categories', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -446,7 +446,7 @@
         
         async function viewProduct(productId) {
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/products/${productId}`, {
+                const response = await fetch(`/procurement/api/products/${productId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -467,7 +467,7 @@
         
         async function editProduct(productId) {
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/products/${productId}`, {
+                const response = await fetch(`/procurement/api/products/${productId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -489,7 +489,7 @@
         // Cargar proveedores para el select
         async function loadSuppliersForSelect() {
             try {
-                const response = await fetch('https://procurement.grupopcr.com.pa/api/suppliers', {
+                const response = await fetch('/procurement/api/suppliers', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -571,7 +571,7 @@
         // Cargar categorías para el select
         async function loadCategoriesForSelect() {
             try {
-                const response = await fetch('https://procurement.grupopcr.com.pa/api/categories', {
+                const response = await fetch('/procurement/api/categories', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -614,8 +614,8 @@
             
             try {
                 const url = productId ? 
-                    `https://procurement.grupopcr.com.pa/api/products/${productId}` : 
-                    'https://procurement.grupopcr.com.pa/api/products';
+                    `/procurement/api/products/${productId}` : 
+                    '/procurement/api/products';
                 
                 const method = productId ? 'PUT' : 'POST';
                 
@@ -671,7 +671,7 @@
         async function deleteProduct(productId, productName) {
             if(confirm(`¿Está seguro de que desea eliminar el producto "${productName}"?\n\nEsta acción no se puede deshacer.`)) {
                 try {
-                    const response = await fetch(`https://procurement.grupopcr.com.pa/api/products/${productId}`, {
+                    const response = await fetch(`/procurement/api/products/${productId}`, {
                         method: 'DELETE',
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -705,7 +705,7 @@
         // Cambiar estado del producto (activar/desactivar)
         async function toggleProductStatus(productId) {
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/products/${productId}/toggle-status`, {
+                const response = await fetch(`/procurement/api/products/${productId}/toggle-status`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

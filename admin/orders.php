@@ -319,7 +319,7 @@
         // Cargar órdenes
         async function loadOrders() {
             try {
-                const response = await fetch('https://procurement.grupopcr.com.pa/api/orders', {
+                const response = await fetch('/procurement/api/orders', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -460,7 +460,7 @@
         // Acciones
         async function viewOrder(orderId) {
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/orders/${orderId}`, {
+                const response = await fetch(`/procurement/api/orders/${orderId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -481,7 +481,7 @@
         
         async function editOrder(orderId) {
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/orders/${orderId}`, {
+                const response = await fetch(`/procurement/api/orders/${orderId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -502,7 +502,7 @@
         
         async function manageSuppliers(orderId) {
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/orders/${orderId}`, {
+                const response = await fetch(`/procurement/api/orders/${orderId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -620,7 +620,7 @@
             const orderId = document.getElementById('editOrderId').value;
             
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/orders/${orderId}`, {
+                const response = await fetch(`/procurement/api/orders/${orderId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -672,7 +672,7 @@
             
             // Cargar proveedores disponibles
             try {
-                const response = await fetch('https://procurement.grupopcr.com.pa/api/suppliers', {
+                const response = await fetch('/procurement/api/suppliers', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -708,7 +708,7 @@
             const supplierIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
             
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/orders/${orderId}/suppliers`, {
+                const response = await fetch(`/procurement/api/orders/${orderId}/suppliers`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -741,7 +741,7 @@
             }
             
             try {
-                const response = await fetch(`https://procurement.grupopcr.com.pa/api/orders/${orderId}/suppliers/${supplierId}`, {
+                const response = await fetch(`/procurement/api/orders/${orderId}/suppliers/${supplierId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
