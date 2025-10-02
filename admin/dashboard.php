@@ -275,7 +275,7 @@
         // Cargar dashboard
         async function loadDashboard() {
             try {
-                const response = await fetch('/procurement/api/admin/dashboard_stats', {
+                const response = await fetch('/api/admin/dashboard_stats', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -371,7 +371,7 @@
         // Cargar órdenes recientes
         async function loadRecentOrders() {
             try {
-                const response = await fetch('/procurement/api/orders?limit=5', {
+                const response = await fetch('api/orders?limit=5', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
