@@ -3,11 +3,10 @@
 $auth_user = $auth->requireAuth();
 
 try {
-    // Obtener producto con información de categoría y proveedor
-    $query = "SELECT p.*, c.name as category_name, s.company_name as supplier_name
+    // Obtener producto con información de categoría
+    $query = "SELECT p.*, c.name as category_name
               FROM products p 
               LEFT JOIN categories c ON p.category_id = c.id 
-              LEFT JOIN suppliers s ON p.supplier_id = s.id 
               WHERE p.id = :id";
     
     $stmt = $db->prepare($query);
