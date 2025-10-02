@@ -6,7 +6,7 @@
     <title>Dashboard - Sistema de Procurement</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <style>
         .sidebar {
             min-height: 100vh;
@@ -275,7 +275,7 @@
         // Cargar dashboard
         async function loadDashboard() {
             try {
-                const response = await fetch('/procurement/api/admin/dashboard_stats', {
+                const response = await fetch('api/admin/dashboard_stats', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }

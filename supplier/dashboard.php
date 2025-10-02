@@ -275,7 +275,7 @@
         // Cargar dashboard
         async function loadDashboard() {
             try {
-                const response = await fetch('/procurement/api/supplier/dashboard_stats', {
+                const response = await fetch('api/supplier/dashboard_stats', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -310,7 +310,7 @@
         // Función para renovar token
         async function refreshToken() {
             try {
-                const response = await fetch('/procurement/api/login_unified.php', {
+                const response = await fetch('api/login_unified.php', {
                     method: 'POST',
                     body: new URLSearchParams({
                         'username': 'proveedor@abc.com',
@@ -341,7 +341,7 @@
         // Cargar órdenes
         async function loadOrders() {
             try {
-                const response = await fetch('/procurement/api/supplier/orders', {
+                const response = await fetch('api/supplier/orders', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -415,7 +415,7 @@
         // Abrir modal de cotización
         async function openQuotationModal(orderId) {
             try {
-                const response = await fetch(`/procurement/api/orders/${orderId}`, {
+                const response = await fetch(`api/orders/${orderId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -481,7 +481,7 @@
             const data = Object.fromEntries(formData);
             
             try {
-                const response = await fetch('/procurement/api/orders/' + data.order_id + '/quotations', {
+                const response = await fetch('api/orders/' + data.order_id + '/quotations', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -770,7 +770,7 @@
             }
             
             try {
-                const response = await fetch('/procurement/api/supplier/submit_quotation', {
+                const response = await fetch('api/supplier/submit_quotation', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

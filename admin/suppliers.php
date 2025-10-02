@@ -287,7 +287,7 @@
         // Cargar proveedores
         async function loadSuppliers() {
             try {
-                const response = await fetch('/procurement/api/suppliers', {
+                const response = await fetch('api/suppliers', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -405,7 +405,7 @@
         
         async function viewSupplier(supplierId) {
             try {
-                const response = await fetch(`/procurement/api/suppliers/${supplierId}`, {
+                const response = await fetch(`api/suppliers/${supplierId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -426,7 +426,7 @@
         
         async function editSupplier(supplierId) {
             try {
-                const response = await fetch(`/procurement/api/suppliers/${supplierId}`, {
+                const response = await fetch(`api/suppliers/${supplierId}`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
@@ -448,7 +448,7 @@
         async function approveSupplier(supplierId) {
             if(confirm('¿Está seguro de aprobar este proveedor?')) {
                 try {
-                    const response = await fetch(`/procurement/api/suppliers/${supplierId}/approve`, {
+                    const response = await fetch(`api/suppliers/${supplierId}/approve`, {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -476,8 +476,8 @@
             
             try {
                 const url = supplierId ? 
-                    `/procurement/api/suppliers/${supplierId}` : 
-                    '/procurement/api/suppliers';
+                    `api/suppliers/${supplierId}` : 
+                    'api/suppliers';
                 
                 const method = supplierId ? 'PUT' : 'POST';
                 
