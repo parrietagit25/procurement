@@ -371,7 +371,7 @@
         // Cargar órdenes recientes
         async function loadRecentOrders() {
             try {
-                const response = await fetch('api/orders?limit=5', {
+                const response = await fetch('/api/orders?limit=5', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
