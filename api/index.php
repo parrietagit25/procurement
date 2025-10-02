@@ -31,9 +31,22 @@ if (strpos($path, $basePath) === 0) {
 
 error_log("API Router Debug - After removing base: " . $path);
 
-// Verificar que sea una ruta de API
+// Verificar que sea una ruta de API válida
 if (strpos($path, '/') !== 0) {
     $path = '/' . $path;
+}
+
+// Si la ruta es solo "/" o está vacía, mostrar error
+if ($path === '/' || $path === '') {
+    http_response_code(404);
+    echo json_encode(['error' => 'Endpoint no especificado', 'available_endpoints' => [
+        'GET /api/products',
+        'GET /api/suppliers', 
+        'GET /api/orders',
+        'GET /api/categories',
+        'GET /api/admin/dashboard_stats'
+    ]]);
+    exit;
 }
 
 // Inicializar la base de datos y clases
